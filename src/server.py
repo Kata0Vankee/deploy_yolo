@@ -19,8 +19,8 @@ weights_file_name = 'yolov3.weights'
 path = pathlib.Path(__file__).parent
 
 app = Starlette()
-app.mount('/static', StaticFiles(directory='static'))
-app.mount('/img', StaticFiles(directory='img'))
+app.mount('/static', StaticFiles(directory='src/static'))
+app.mount('/img', StaticFiles(directory='src/img'))
 
 async def download_file(url, dest):
 	if dest.exists(): return
@@ -36,6 +36,7 @@ def save_image(path, img_bytes, image_name):
     img = Image.open(BytesIO(img_bytes))
     if (path/'img'/name).exists():
         os.remove(path/'img'/name)
+        os.remove(path/'img'/'pic1_detected.jpg')
     img.save(path/'img'/name)
 
 

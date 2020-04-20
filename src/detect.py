@@ -5,15 +5,24 @@ import pathlib
 
 # Load YOLO
 def load_model():
-	net = cv2.dnn.readNet("yolov3.weights", "yolov3.cfg")
+	path = pathlib.Path(__file__).parent
+	print(path)
+	print((path/'yolov3.weights').exists())
+	print((path/'yolov3.cfg').exists())
+	
+	try:
+		net = cv2.dnn.readNet("src/yolov3.weights", "src/yolov3.cfg") 
+	except Exception as e:
+		print(e)
+
 	classes = []
-	with open("coco.names", "r") as f:
-	    classes = [line.strip() for line in f.readlines()]
+
+	with open("src/coco.names", "r") as f:
+		classes = [line.strip() for line in f.readlines()]
 
 	layer_names = net.getLayerNames()
 	#print(layer_names)
-	output_layers = [layer_names[layer[0] - 1]
-	                 for layer in net.getUnconnectedOutLayers()]
+	output_layers = [layer_names[layer[0] - 1] for layer in net.getUnconnectedOutLayers()]
 	return (net, classes, output_layers)
 
 
@@ -23,7 +32,7 @@ def detect_img():
 	# print(path/img_path)
 
 	# print("path::: "+img_path)
-	img = cv2.imread('img/pic1.jpg')
+	img = cv2.imread('src/img/pic1.jpg')
 	img = cv2.resize(img, None, fx=0.4, fy=0.4)
 	height, width, channels = img.shape
 
@@ -73,5 +82,5 @@ def detect_img():
 	        cv2.rectangle(img, (x, y), (x + width, x + height), color, 1)
 	        cv2.putText(img, label, (x, y + 10), font, 0.5, color, 1)
 
-	cv2.imwrite('img/pic1_detected.jpg', img)
+	cv2.imwrite('src/img/pic1_detected.jpg', img)
 	return
